@@ -1,0 +1,30 @@
+# Root .gitignore for Personal Finance Management System
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.sw?
+*.log
+
+# Frontend build & dependencies
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+!frontend/.env.example
+
+# Backend build & local configs
+personal-finance/target/
+personal-finance/.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+personal-finance/.env
+personal-finance/*.env
+personal-finance/application-local.properties
+personal-finance/application-*.properties
+!personal-finance/src/main/resources/application.properties
