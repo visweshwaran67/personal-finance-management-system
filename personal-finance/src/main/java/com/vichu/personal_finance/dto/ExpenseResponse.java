@@ -3,12 +3,15 @@ package com.vichu.personal_finance.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.vichu.personal_finance.entity.PaymentMethod;
+
 public class ExpenseResponse {
 
     private Long id;
     private BigDecimal amount;
     private LocalDate date;
     private String description;
+    private PaymentMethod paymentMethod;
 
     public Long getId() {
         return id;
@@ -40,5 +43,13 @@ public class ExpenseResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

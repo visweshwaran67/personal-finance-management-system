@@ -25,9 +25,10 @@ export const Sidebar = ({ isOpen, onClose }) => {
         <div className="sidebar-header">
           <div className="brand">
             <div className="brand-icon">
-              <Wallet size={20} />
+              <Wallet size={19} />
             </div>
             <span>FinanceFlow</span>
+            <span className="brand-tag">PRO</span>
           </div>
 
           {/* Mobile close button */}
@@ -47,7 +48,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             onClick={onClose}
           >
-            <LayoutDashboard size={19} />
+            <LayoutDashboard size={18} />
             <span>Dashboard</span>
           </NavLink>
 
@@ -56,7 +57,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             onClick={onClose}
           >
-            <Receipt size={19} />
+            <Receipt size={18} />
             <span>Expenses</span>
           </NavLink>
         </nav>
@@ -68,12 +69,12 @@ export const Sidebar = ({ isOpen, onClose }) => {
             </div>
             <div className="user-details">
               <p className="user-name">{user?.username || 'User'}</p>
-              <p className="user-role">{user?.role || 'USER'}</p>
+              <span className="user-role-badge">{user?.role || 'USER'}</span>
             </div>
           </div>
 
           <button onClick={handleLogout} className="logout-btn" title="Sign out of your account">
-            <LogOut size={16} />
+            <LogOut size={15} />
             <span>Sign Out</span>
           </button>
         </div>

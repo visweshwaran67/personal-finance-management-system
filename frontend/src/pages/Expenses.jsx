@@ -2,14 +2,11 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   PlusCircle,
   Search,
-  Filter,
-  ArrowUpDown,
   RefreshCw,
   X,
   ChevronLeft,
   ChevronRight,
   AlertCircle,
-  Calendar,
 } from 'lucide-react';
 import { expenseApi } from '../api/expenseApi';
 import ExpenseTable from '../components/ExpenseTable';
@@ -28,6 +25,7 @@ export const Expenses = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState('ALL');
   const [sortBy, setSortBy] = useState('date-desc'); // 'date-desc', 'date-asc', 'amount-desc', 'amount-asc'
 
   // Pagination
@@ -93,6 +91,11 @@ export const Expenses = () => {
       result = result.filter((item) => item.date && item.date <= endDate);
     }
 
+    // Filter by payment method
+    if (paymentMethodFilter && paymentMethodFilter !== 'ALL') {
+      result = result.filter((item) => item.paymentMethod === paymentMethodFilter);
+    }
+
     // Sort
     result.sort((a, b) => {
       if (sortBy === 'date-desc') {
@@ -113,12 +116,12 @@ export const Expenses = () => {
     });
 
     return result;
-  }, [expenses, searchTerm, startDate, endDate, sortBy]);
+  }, [expenses, searchTerm, startDate, endDate, paymentMethodFilter, sortBy]);
 
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, startDate, endDate, sortBy]);
+  }, [searchTerm, startDate, endDate, paymentMethodFilter, sortBy]);
 
   // Pagination calculation
   const totalPages = Math.ceil(filteredExpenses.length / itemsPerPage) || 1;
@@ -174,10 +177,17 @@ export const Expenses = () => {
     setSearchTerm('');
     setStartDate('');
     setEndDate('');
+    setPaymentMethodFilter('ALL');
     setSortBy('date-desc');
   };
 
-  const hasActiveFilters = Boolean(searchTerm || startDate || endDate || sortBy !== 'date-desc');
+  const hasActiveFilters = Boolean(
+    searchTerm ||
+    startDate ||
+    endDate ||
+    paymentMethodFilter !== 'ALL' ||
+    sortBy !== 'date-desc'
+  );
 
   if (loading) {
     return <LoadingSpinner message="Loading expense management..." />;
@@ -200,15 +210,26 @@ export const Expenses = () => {
       <div className="section-header">
         <div>
           <h2 className="section-title">All Expenses</h2>
-          <p className="section-subtitle">
-            Showing {filteredExpenses.length} of {expenses.length} total recorded items
-            {hasActiveFilters && ` • Filtered Total: ${formatINR(filteredTotal)}`}
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+            <p className="section-subtitle" style={{ margin: 0 }}>
+              Showing {filteredExpenses.length} of {expenses.length} total items
+            </p>
+            {hasActiveFilters && (
+              <span className="badge badge-emerald" style={{ fontSize: '0.775rem', padding: '0.15rem 0.55rem' }}>
+                Filtered Total: {formatINR(filteredTotal)}
+              </span>
+            )}
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <button onClick={fetchExpenses} className="btn btn-secondary" title="Refresh data">
-            <RefreshCw size={16} />
+          <button
+            onClick={fetchExpenses}
+            className="btn btn-secondary"
+            title="Refresh data"
+            aria-label="Refresh data"
+          >
+            <RefreshCw size={15} />
             <span>Refresh</span>
           </button>
           <button
@@ -246,7 +267,7 @@ export const Expenses = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: '0.85rem',
             alignItems: 'center',
           }}
@@ -254,7 +275,7 @@ export const Expenses = () => {
           {/* Search by Description */}
           <div style={{ position: 'relative' }}>
             <Search
-              size={17}
+              size={16}
               style={{
                 position: 'absolute',
                 left: '0.75rem',
@@ -266,10 +287,11 @@ export const Expenses = () => {
             <input
               type="text"
               className="form-control"
-              style={{ paddingLeft: '2.25rem' }}
+              style={{ paddingLeft: '2.2rem' }}
               placeholder="Search by description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search expenses by description"
             />
           </div>
 
@@ -284,6 +306,7 @@ export const Expenses = () => {
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               title="Filter from start date"
+              aria-label="Filter from start date"
             />
           </div>
 
@@ -298,7 +321,26 @@ export const Expenses = () => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               title="Filter up to end date"
+              aria-label="Filter up to end date"
             />
+          </div>
+
+          {/* Payment Method Filter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', minWidth: '55px' }}>
+              Method:
+            </span>
+            <select
+              className="form-control"
+              value={paymentMethodFilter}
+              onChange={(e) => setPaymentMethodFilter(e.target.value)}
+              title="Filter by payment method"
+              aria-label="Filter by payment method"
+            >
+              <option value="ALL">All Methods</option>
+              <option value="GPAY_UPI">GPay / UPI</option>
+              <option value="CASH">Cash</option>
+            </select>
           </div>
 
           {/* Sort By Dropdown */}
@@ -310,6 +352,7 @@ export const Expenses = () => {
               className="form-control"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Sort expenses by"
             >
               <option value="date-desc">Date (Newest First)</option>
               <option value="date-asc">Date (Oldest First)</option>
@@ -331,7 +374,11 @@ export const Expenses = () => {
                 fontSize: '0.8125rem',
                 color: 'var(--danger)',
                 fontWeight: 600,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
               }}
+              aria-label="Reset all filters"
             >
               <X size={14} />
               <span>Reset all filters</span>
@@ -340,7 +387,7 @@ export const Expenses = () => {
         )}
       </div>
 
-      {/* Main Expense Table */}
+      {/* Main Expense Table / Cards */}
       <ExpenseTable
         expenses={paginatedExpenses}
         onEdit={(item) => {
@@ -363,35 +410,51 @@ export const Expenses = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginTop: '1.25rem',
+            marginTop: '1.5rem',
             padding: '0.5rem 0',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
           }}
         >
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Page {currentPage} of {totalPages} ({filteredExpenses.length} total)
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+            Showing {((currentPage - 1) * itemsPerPage) + 1}–{Math.min(currentPage * itemsPerPage, filteredExpenses.length)} of {filteredExpenses.length} expenses
           </span>
 
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <button
               className="btn btn-secondary"
-              style={{ padding: '0.4rem 0.75rem', fontSize: '0.8125rem' }}
+              style={{ padding: '0.45rem 0.85rem', fontSize: '0.825rem' }}
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
               aria-label="Previous Page"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={15} />
               <span>Prev</span>
             </button>
 
+            <span
+              style={{
+                fontSize: '0.825rem',
+                fontWeight: 700,
+                color: 'var(--text-main)',
+                padding: '0.35rem 0.65rem',
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-sm)',
+              }}
+            >
+              {currentPage} / {totalPages}
+            </span>
+
             <button
               className="btn btn-secondary"
-              style={{ padding: '0.4rem 0.75rem', fontSize: '0.8125rem' }}
+              style={{ padding: '0.45rem 0.85rem', fontSize: '0.825rem' }}
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
               aria-label="Next Page"
             >
               <span>Next</span>
-              <ChevronRight size={16} />
+              <ChevronRight size={15} />
             </button>
           </div>
         </div>

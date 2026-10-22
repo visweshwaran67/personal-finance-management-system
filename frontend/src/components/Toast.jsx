@@ -8,7 +8,7 @@ export const Toast = ({ type = 'success', message, onClose }) => {
   const isError = type === 'error';
 
   return (
-    <div className={`toast ${type}`}>
+    <div className={`toast ${type}`} role="alert" aria-live="polite">
       {isSuccess && <CheckCircle2 size={18} color="#34d399" />}
       {isError && <AlertCircle size={18} color="#f87171" />}
       {!isSuccess && !isError && <Info size={18} color="#38bdf8" />}

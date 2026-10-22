@@ -76,3 +76,61 @@ export function compareExpensesByDateDesc(a, b) {
   }
   return (b.id || 0) - (a.id || 0);
 }
+
+/**
+ * Check if a date string (YYYY-MM-DD) matches today's local date.
+ *
+ * @param {string} dateString
+ * @returns {boolean}
+ */
+export function isToday(dateString) {
+  if (!dateString) return false;
+  return dateString === getTodayString();
+}
+
+/**
+ * Format date with contextual prefix (e.g. "Today, 22 Oct 2026" or "18 Oct 2026").
+ *
+ * @param {string} dateString
+ * @returns {string}
+ */
+export function formatDateWithContext(dateString) {
+  if (!dateString) return '—';
+  const formatted = formatDisplayDate(dateString);
+  if (isToday(dateString)) {
+    return `Today, ${formatted}`;
+  }
+  return formatted;
+}
+
+/**
+ * Get current year and month as YYYY-MM (e.g. "2026-10").
+ *
+ * @returns {string}
+ */
+export function getCurrentYearMonth() {
+  return getTodayString().substring(0, 7);
+}
+
+/**
+ * Get full month name and year (e.g. "October 2026").
+ *
+ * @returns {string}
+ */
+export function getCurrentMonthName() {
+  return new Date().toLocaleDateString('en-IN', {
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+/**
+ * Check if a date string falls within the current local calendar month and year.
+ *
+ * @param {string} dateString
+ * @returns {boolean}
+ */
+export function isCurrentMonth(dateString) {
+  if (!dateString) return false;
+  return dateString.startsWith(getCurrentYearMonth());
+}

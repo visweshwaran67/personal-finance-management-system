@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.vichu.personal_finance.dto.ExpenseRequest;
 import com.vichu.personal_finance.dto.ExpenseResponse;
 import com.vichu.personal_finance.entity.Expense;
+import com.vichu.personal_finance.entity.User;
 import com.vichu.personal_finance.exception.ResourceNotFoundException;
 import com.vichu.personal_finance.repository.ExpenseRepository;
 import com.vichu.personal_finance.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.vichu.personal_finance.entity.User;
 
 @Service
 public class ExpenseService {
@@ -20,8 +20,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
 
-
-    public ExpenseService(ExpenseRepository expenseRepository ,UserRepository userRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository, UserRepository userRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
     }
@@ -33,6 +32,7 @@ public class ExpenseService {
         expense.setAmount(expenseRequest.getAmount());
         expense.setDate(expenseRequest.getDate());
         expense.setDescription(expenseRequest.getDescription());
+        expense.setPaymentMethod(expenseRequest.getPaymentMethod());
 
         String username = SecurityContextHolder.getContext()
         .getAuthentication()
@@ -49,6 +49,7 @@ public class ExpenseService {
         response.setAmount(savedExpense.getAmount());
         response.setDate(savedExpense.getDate());
         response.setDescription(savedExpense.getDescription());
+        response.setPaymentMethod(savedExpense.getPaymentMethod());
         return response;
     }
 
@@ -71,6 +72,7 @@ public class ExpenseService {
         response.setAmount(expense.getAmount());
         response.setDate(expense.getDate());
         response.setDescription(expense.getDescription());
+        response.setPaymentMethod(expense.getPaymentMethod());
 
         responses.add(response);
     }
@@ -95,6 +97,7 @@ public class ExpenseService {
         response.setAmount(expense.getAmount());
         response.setDate(expense.getDate());
         response.setDescription(expense.getDescription());
+        response.setPaymentMethod(expense.getPaymentMethod());
 
         return response;
     }
@@ -105,7 +108,7 @@ public class ExpenseService {
         .getAuthentication()
         .getName();
 
-Expense existing = expenseRepository
+        Expense existing = expenseRepository
         .findByIdAndUser_Username(id, username)
         .orElseThrow(() -> new ResourceNotFoundException(
                 "Expense not found with id : " + id));
@@ -113,6 +116,7 @@ Expense existing = expenseRepository
         existing.setAmount(expenseRequest.getAmount());
         existing.setDate(expenseRequest.getDate());
         existing.setDescription(expenseRequest.getDescription());
+        existing.setPaymentMethod(expenseRequest.getPaymentMethod());
 
         Expense updatedExpense = expenseRepository.save(existing);
         ExpenseResponse response = new ExpenseResponse();
@@ -121,6 +125,7 @@ Expense existing = expenseRepository
         response.setAmount(updatedExpense.getAmount());
         response.setDate(updatedExpense.getDate());
         response.setDescription(updatedExpense.getDescription());
+        response.setPaymentMethod(updatedExpense.getPaymentMethod());
         return response;
     }
 
