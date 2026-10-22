@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { TrendingUp, Calendar, AlertCircle } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { formatINR } from '../utils/currency';
 import { formatDisplayDate } from '../utils/date';
 
@@ -30,20 +30,20 @@ export const SpendingChart = ({ expenses = [] }) => {
 
   if (chartData.length === 0) {
     return (
-      <div className="card" style={{ marginTop: '1.5rem' }}>
+      <div className="card" style={{ marginTop: '1.75rem' }}>
         <div className="section-header" style={{ marginBottom: '1rem' }}>
           <div>
             <h3 className="section-title">Spending Over Time</h3>
-            <p className="section-subtitle">Chronological trend of your recorded expenses</p>
+            <p className="section-subtitle">Chronological trend of your recorded expenditures</p>
           </div>
         </div>
         <div className="empty-state" style={{ padding: '2.5rem 1rem' }}>
           <div className="empty-state-icon">
-            <TrendingUp size={28} />
+            <TrendingUp size={26} />
           </div>
           <h4 className="empty-state-title">No spending trend available</h4>
           <p className="empty-state-text">
-            Start recording your daily expenses to visualize your spending pattern and track fluctuations over time.
+            Start recording your daily expenses to visualize spending patterns and track expenditures over time.
           </p>
         </div>
       </div>
@@ -93,21 +93,21 @@ export const SpendingChart = ({ expenses = [] }) => {
   });
 
   return (
-    <div className="card" style={{ marginTop: '1.5rem' }}>
+    <div className="card" style={{ marginTop: '1.75rem' }}>
       <div className="section-header">
         <div>
           <h3 className="section-title">Spending Over Time</h3>
           <p className="section-subtitle">
-            Timeline of {chartData.length} unique {chartData.length === 1 ? 'date' : 'dates'} with recorded spending
+            Timeline of {chartData.length} unique {chartData.length === 1 ? 'date' : 'dates'} with recorded expenditures
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
           <span style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: 'var(--primary)', display: 'inline-block' }} />
-          <span>Expense Volume</span>
+          <span>Expense Volume (₹)</span>
         </div>
       </div>
 
-      <div style={{ position: 'relative', width: '100%', overflowX: 'auto' }}>
+      <div style={{ position: 'relative', width: '100%', overflowX: 'auto', paddingBottom: '0.5rem' }}>
         <svg
           viewBox={`0 0 ${width} ${height}`}
           style={{ width: '100%', minWidth: '550px', height: 'auto', display: 'block' }}
@@ -116,7 +116,7 @@ export const SpendingChart = ({ expenses = [] }) => {
         >
           <defs>
             <linearGradient id="spendingGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#059669" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#059669" stopOpacity="0.22" />
               <stop offset="100%" stopColor="#059669" stopOpacity="0.0" />
             </linearGradient>
           </defs>
@@ -200,17 +200,18 @@ export const SpendingChart = ({ expenses = [] }) => {
               transform: 'translate(-50%, -120%)',
               backgroundColor: '#0f172a',
               color: '#ffffff',
-              padding: '0.45rem 0.75rem',
-              borderRadius: '6px',
+              padding: '0.5rem 0.85rem',
+              borderRadius: '8px',
               fontSize: '0.8rem',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              boxShadow: 'var(--shadow-lg)',
               pointerEvents: 'none',
               zIndex: 10,
               whiteSpace: 'nowrap',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
             }}
           >
-            <div style={{ fontWeight: 600 }}>{hoveredPoint.label}</div>
-            <div style={{ color: '#34d399', fontWeight: 700, marginTop: '2px' }}>
+            <div style={{ fontWeight: 600, color: '#e2e8f0' }}>{hoveredPoint.label}</div>
+            <div style={{ color: '#34d399', fontWeight: 800, fontSize: '0.95rem', marginTop: '2px' }}>
               {formatINR(hoveredPoint.total)}
             </div>
           </div>

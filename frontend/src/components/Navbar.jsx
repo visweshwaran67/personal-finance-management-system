@@ -1,10 +1,8 @@
 import React from 'react';
 import { Menu, Calendar } from 'lucide-react';
 import { getCurrentDateFormatted } from '../utils/date';
-import { useAuth } from '../context/AuthContext';
 
 export const Navbar = ({ onToggleSidebar, title = 'Dashboard' }) => {
-  const { user } = useAuth();
   const currentDate = getCurrentDateFormatted();
 
   return (
@@ -23,8 +21,8 @@ export const Navbar = ({ onToggleSidebar, title = 'Dashboard' }) => {
       </div>
 
       <div className="navbar-right">
-        <div className="navbar-date" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Calendar size={15} color="var(--text-muted)" />
+        <div className="navbar-date-badge" title="Current session date">
+          <Calendar size={14} color="var(--primary)" />
           <span>{currentDate}</span>
         </div>
       </div>

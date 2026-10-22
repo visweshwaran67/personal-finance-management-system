@@ -3,6 +3,8 @@ package com.vichu.personal_finance.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.vichu.personal_finance.entity.PaymentMethod;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,6 +19,9 @@ public class ExpenseRequest {
 
     @NotBlank
     private String description;
+
+    @NotNull(message = "Payment method is required")
+    private PaymentMethod paymentMethod;
 
     public BigDecimal getAmount() {
         return amount;
@@ -40,5 +45,13 @@ public class ExpenseRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

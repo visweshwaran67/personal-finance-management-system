@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Loader2, IndianRupee, Calendar, FileText, AlertCircle } from 'lucide-react';
+import { X, Loader2, AlertCircle } from 'lucide-react';
 import { getTodayString } from '../utils/date';
+import { PAYMENT_METHODS, isValidPaymentMethod } from '../utils/paymentMethod';
 
 export const ExpenseFormModal = ({
   isOpen,
@@ -14,6 +15,7 @@ export const ExpenseFormModal = ({
     description: '',
     amount: '',
     date: getTodayString(),
+    paymentMethod: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -24,12 +26,14 @@ export const ExpenseFormModal = ({
         description: initialData.description || '',
         amount: initialData.amount !== undefined ? String(initialData.amount) : '',
         date: initialData.date || getTodayString(),
+        paymentMethod: initialData.paymentMethod || '',
       });
     } else {
       setFormData({
         description: '',
         amount: '',
         date: getTodayString(),
+        paymentMethod: '',
       });
     }
     setErrors({});
@@ -57,6 +61,12 @@ export const ExpenseFormModal = ({
       newErrors.date = 'Date is required';
     }
 
+    if (!formData.paymentMethod) {
+      newErrors.paymentMethod = 'Please select a payment method';
+    } else if (!isValidPaymentMethod(formData.paymentMethod)) {
+      newErrors.paymentMethod = 'Please choose a valid payment method';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -69,6 +79,7 @@ export const ExpenseFormModal = ({
       description: formData.description.trim(),
       amount: Number(formData.amount),
       date: formData.date,
+      paymentMethod: formData.paymentMethod,
     });
   };
 
@@ -156,7 +167,7 @@ export const ExpenseFormModal = ({
               {errors.amount && <span className="form-error">{errors.amount}</span>}
             </div>
 
-            <div className="form-group" style={{ marginBottom: 0 }}>
+            <div className="form-group">
               <label className="form-label" htmlFor="expense-date">
                 Date <span style={{ color: 'var(--danger)' }}>*</span>
               </label>
@@ -172,6 +183,30 @@ export const ExpenseFormModal = ({
                 disabled={isSubmitting}
               />
               {errors.date && <span className="form-error">{errors.date}</span>}
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" htmlFor="expense-payment-method">
+                Payment Method <span style={{ color: 'var(--danger)' }}>*</span>
+              </label>
+              <select
+                id="expense-payment-method"
+                className={`form-control ${errors.paymentMethod ? 'error' : ''}`}
+                value={formData.paymentMethod}
+                onChange={(e) => {
+                  setFormData({ ...formData, paymentMethod: e.target.value });
+                  if (errors.paymentMethod) setErrors({ ...errors, paymentMethod: null });
+                }}
+                disabled={isSubmitting}
+              >
+                <option value="">-- Select Payment Method --</option>
+                {PAYMENT_METHODS.map((pm) => (
+                  <option key={pm.value} value={pm.value}>
+                    {pm.label}
+                  </option>
+                ))}
+              </select>
+              {errors.paymentMethod && <span className="form-error">{errors.paymentMethod}</span>}
             </div>
           </div>
 
