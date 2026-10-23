@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,7 +24,7 @@ public class Expense {
     private User user;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Amount is required")
@@ -39,34 +40,38 @@ public class Expense {
     @Column(name = "payment_method")
     private PaymentMethod paymentMethod;
 
-    public Expense(){
-
+    public Expense() {
     }
 
-    public Long getId(){
+    public Long getId() {
         return id;
     }
-    public void setId(Long id){
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public BigDecimal getAmount(){
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount){
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-    public LocalDate getDate(){
+
+    public LocalDate getDate() {
         return date;
     }
-    public void setDate(LocalDate date){
+
+    public void setDate(LocalDate date) {
         this.date = date;
     }
-    public String getDescription(){
+
+    public String getDescription() {
         return description;
     }
-    public void setDescription(String description){
+
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -85,5 +90,4 @@ public class Expense {
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-
 }
